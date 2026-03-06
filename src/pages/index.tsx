@@ -49,14 +49,14 @@ export const HomePage: React.FC = () => {
         title="Главная страница"
         description={
           <>
-            <Link to="/context">Контекст</Link>.
+            <Link to="/context">Контекст</Link>
           </>
         }
       />
 
       <VSpacing default={24} />
 
-      <Card padding={16} borderRadius={16} shadow="level-1">
+      {/* <Card padding={16} borderRadius={16} shadow="level-1">
         <Title Element="h2" size="small">
           Пример работы со store
         </Title>
@@ -99,7 +99,7 @@ export const HomePage: React.FC = () => {
         >
           Уменьшить счётчик
         </Button>
-      </Card>
+      </Card> */}
 
       <VSpacing default={24} />
 
