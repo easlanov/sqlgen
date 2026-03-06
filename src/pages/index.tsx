@@ -50,6 +50,8 @@ export const HomePage: React.FC = () => {
         description={
           <>
             <Link to="/context">Контекст</Link>
+            {' | '}
+            <Link to="/model">Модель</Link>
           </>
         }
       />

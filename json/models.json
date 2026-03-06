@@ -1,0 +1,12 @@
+{
+    "models": [
+        {
+            "type": "gpt-5",
+            "reasoning": ["high", "medium"]
+        },
+        {
+            "type": "gemini",
+            "reasoning": ["high", "medium"]
+        }
+    ]
+}

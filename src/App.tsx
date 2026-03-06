@@ -4,6 +4,7 @@ import { HomePage } from './pages';
 import { AboutPage } from './pages/about';
 import { AskDbPage } from './pages/askdb';
 import { ContextPage } from './pages/context';
+import { ModelPage } from './pages/model';
 
 export const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ export const App: React.FC = () => {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/askdb" element={<AskDbPage />} />
       <Route path="/context" element={<ContextPage />} />
+      <Route path="/model" element={<ModelPage />} />
     </Routes>
   );
 };
