@@ -49,8 +49,7 @@ export const HomePage: React.FC = () => {
         title="Главная страница"
         description={
           <>
-            Это главная страница примера. Перейдите на{' '}
-            <Link to="/about">страницу «О проекте»</Link>.
+            <Link to="/context">Контекст</Link>.
           </>
         }
       />
@@ -145,20 +144,7 @@ export const HomePage: React.FC = () => {
 
       <Divider marginTop={16} marginBottom={16} />
 
-      <Card stretched>
-        <Title Element="h2" size="small">
-          Magritte + React Router
-        </Title>
-        <VSpacing default={16} />
-        <Text>
-          Это простая статичная страница, собранная как отдельный пакет. Бандл включает HTML, JS и CSS,
-          а UI собран на дизайн-системе Magritte.
-        </Text>
-        <VSpacing default={24} />
-        <Button mode="primary" size="medium">
-          Кнопка Magritte
-        </Button>
-      </Card>
+      
     </GridLayout>
   );
 };
