@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Divider, GridLayout, Text, Title, VSpacing } from '@hh.ru/magritte-ui';
 
@@ -6,7 +6,7 @@ import modelsData from '../../json/models.json';
 
 type ModelItem = {
   type: string;
-  reasoning: string;
+  reasoning: string[];
 };
 
 type ModelsJson = {
@@ -18,64 +18,55 @@ const DATA = modelsData as ModelsJson;
 export const ModelPage: React.FC = () => {
   const models = DATA.models ?? [];
 
-  const modelTypes = useMemo(() => {
-    const uniq = new Set<string>();
-    models.forEach((m) => uniq.add(m.type));
-    return Array.from(uniq);
-  }, [models]);
+  const modelTypes = useMemo(() => models.map((m) => m.type), [models]);
 
   const reasoningByType = useMemo(() => {
     const map: Record<string, string[]> = {};
     models.forEach((m) => {
-      if (!map[m.type]) {
-        map[m.type] = [];
-      }
-      if (!map[m.type].includes(m.reasoning)) {
-        map[m.type].push(m.reasoning);
-      }
+      map[m.type] = Array.from(new Set(m.reasoning ?? []));
     });
     return map;
   }, [models]);
 
-  const allReasoningLevels = useMemo(() => {
-    const uniq = new Set<string>();
-    models.forEach((m) => uniq.add(m.reasoning));
-    return Array.from(uniq);
-  }, [models]);
-
   const [selectedType, setSelectedType] = useState<string | null>(modelTypes[0] ?? null);
 
-  const allowedReasoning = selectedType
-    ? reasoningByType[selectedType] ?? []
-    : [];
+  const allowedReasoning = useMemo(() => {
+    if (!selectedType) {
+      return [];
+    }
+    return reasoningByType[selectedType] ?? [];
+  }, [reasoningByType, selectedType]);
 
   const [selectedReasoning, setSelectedReasoning] = useState<string | null>(() => {
-    if (!selectedType) {
-      return allReasoningLevels[0] ?? null;
+    const firstType = modelTypes[0];
+    if (!firstType) {
+      return null;
     }
-    return (reasoningByType[selectedType]?.[0] ?? allReasoningLevels[0] ?? null);
+    const firstReasoning = models[0]?.reasoning?.[0];
+    return firstReasoning ?? null;
   });
 
-  const effectiveReasoningOptions = allowedReasoning.length ? allowedReasoning : allReasoningLevels;
-
-  const isKnownCombination = useMemo(() => {
-    if (!selectedType || !selectedReasoning) {
-      return false;
-    }
-    return models.some((m) => m.type === selectedType && m.reasoning === selectedReasoning);
-  }, [models, selectedReasoning, selectedType]);
-
-  const handleSelectType = (nextType: string) => {
-    setSelectedType(nextType);
-
-    const nextAllowed = reasoningByType[nextType] ?? [];
-    if (nextAllowed.length === 0) {
+  useEffect(() => {
+    if (!selectedType) {
+      if (modelTypes.length) {
+        setSelectedType(modelTypes[0] ?? null);
+      }
       return;
     }
 
-    if (!selectedReasoning || !nextAllowed.includes(selectedReasoning)) {
-      setSelectedReasoning(nextAllowed[0] ?? null);
+    const options = reasoningByType[selectedType] ?? [];
+    if (options.length === 0) {
+      setSelectedReasoning(null);
+      return;
     }
+
+    if (!selectedReasoning || !options.includes(selectedReasoning)) {
+      setSelectedReasoning(options[0] ?? null);
+    }
+  }, [modelTypes, reasoningByType, selectedReasoning, selectedType]);
+
+  const handleSelectType = (nextType: string) => {
+    setSelectedType(nextType);
   };
 
   return (
@@ -151,21 +142,20 @@ export const ModelPage: React.FC = () => {
 
           <VSpacing default={8} />
 
-          {effectiveReasoningOptions.length === 0 && (
+          {allowedReasoning.length === 0 && (
             <Text size="s" color="secondary">
               Нет доступных уровней reasoning.
             </Text>
           )}
 
-          {effectiveReasoningOptions.length > 0 && (
+          {allowedReasoning.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {effectiveReasoningOptions.map((r) => (
+              {allowedReasoning.map((r) => (
                 <Button
                   key={r}
                   mode={r === selectedReasoning ? 'primary' : 'secondary'}
                   size="small"
                   onClick={() => setSelectedReasoning(r)}
-                  disabled={allowedReasoning.length > 0 && !allowedReasoning.includes(r)}
                 >
                   {r}
                 </Button>
@@ -195,14 +185,6 @@ export const ModelPage: React.FC = () => {
               <Text>
                 Reasoning: <b>{selectedReasoning ?? '—'}</b>
               </Text>
-
-              <VSpacing default={12} />
-
-              {!isKnownCombination && selectedReasoning && (
-                <Text size="s" color="secondary">
-                  Такой комбинации нет в `json/models.json`, но вы всё равно можете её выбрать.
-                </Text>
-              )}
 
               <VSpacing default={16} />
               <Divider />
