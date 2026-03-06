@@ -52,6 +52,8 @@ export const HomePage: React.FC = () => {
             <Link to="/context">Контекст</Link>
             {' | '}
             <Link to="/model">Модель</Link>
+            {' | '}
+            <Link to="/request">Request</Link>
           </>
         }
       />

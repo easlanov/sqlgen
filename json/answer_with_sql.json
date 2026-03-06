@@ -1,0 +1,6 @@
+{
+    "model_answer_id": "f3b2a7c1-9e11-4c4a-8d63-1b3d4a0c6f2e",
+    "model_answer_type": "sql",
+    "model_answer": "Построил запрос для ответа на вопрос.\n\n--- SQL ---\nSELECT\n  date_trunc('day', created_at) AS day,\n  count(*) AS orders_cnt\nFROM sales.orders\nWHERE created_at >= date_add('day', -7, current_timestamp)\nGROUP BY 1\nORDER BY 1;\n",
+    "model_answer_status": "ok"
+}
