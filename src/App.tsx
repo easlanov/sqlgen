@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { HomePage } from './pages';
+import { HomePage } from './pages/Index';
 import { AboutPage } from './pages/about';
 import { AskDbPage } from './pages/askdb';
 import { ContextPage } from './pages/context';
